@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+<div>
+<p>FPS</p>
+<p>
+    <select id="fps">
+        <option value="25">25</option>
+    </select>
+</p>
+</div> 
+
+<div>
+<p>Frames</p>
+<p><input id="frames" type="number" value="0"/></p>
+<p><input id="el_reset" type="button" value="Reset"></p>
+</div>
+
+<div>
+    <p>Msec</p>
+    <p><input id="el_msec" type="number" value="0"/></p>
+</div>
+
+<div>
+    <p>Timecode HH:MM:SS:FF</p>
+    <p><input id="tc_hh" type="number" value="0"/>
+        <input id="tc_mm" type="number" value="0"/>
+        <input id="tc_ss" type="number" value="0"/>
+        <input id="tc_ff" type="number" value="0"/>
+    </p>
+</div>
+
+<div>
+    <p>Timecode HH:MM:SS.MS</p>
+    <p>
+        <input id="tcms_hh" type="number" value="0"/>
+        <input id="tcms_mm" type="number" value="0"/>
+        <input id="tcms_ss" type="number" value="0"/>
+        <input id="tcms_msec" type="number" value="0"/>
+    </p>
+</div>
+
+<script>
+
+window.addEventListener("load", (event) => {
+  console.log("page is fully loaded")
+  main()
+});
+
+var fps
+
+var el_fps
+
+var el_frames
+var el_msec
+
+var el_tc_hh
+var el_tc_mm
+var el_tc_ss
+var el_tc_ff
+
+var el_tcms_hh
+var el_tcms_mm
+var el_tcms_ss
+var el_tcms_msec
+
+function updateTimecode( frames ) {
+    console.log( `updateTimecode ${frames}` )
+    var fps = Number( el_fps.value )
+    console.log( `FPS: ${fps}` ) 
+    
+    var h = Math.floor(frames/(60*60*fps));
+    var m = (Math.floor(frames/(60*fps))) % 60;
+    var s = (Math.floor(frames/fps)) % 60;
+    var f = frames % fps;
+
+    el_frames.value = frames
+
+    el_msec.value = frames * Math.floor(1000/fps)
+
+    el_tc_hh.value = h
+    el_tc_mm.value = m
+    el_tc_ss.value = s
+    el_tc_ff.value = f
+
+    el_tcms_hh.value = h
+    el_tcms_mm.value = m
+    el_tcms_ss.value = s
+    el_tcms_msec.value = f * Math.floor(1000/fps)
+}
+function TimecodeToFrames( h,m,s,f ) {
+    console.log( `TimecodeToFrames ${h} ${m} ${s} ${f}` )
+    var fps = Number( el_fps.value )
+    console.log( `FPS: ${fps}` ) 
+
+    h = Number( h )
+    m = Number( m )
+    s = Number( s )
+    f = Number( f )
+    
+    var frames = 60 * 60 * fps * h + 
+        60 * fps * m +
+        fps * s +
+        f
+    return frames
+}
+function TimecodeMsecToFrames( h,m,s,msec ) {
+    console.log( `TimecodeToFrames ${h} ${m} ${s} ${msec}` )
+    var fps = Number( el_fps.value )
+    console.log( `FPS: ${fps}` ) 
+
+    h = Number( h )
+    m = Number( m )
+    s = Number( s )
+    msec = Number( msec )
+    
+    var frames = 60 * 60 * fps * h + 
+        60 * fps * m +
+        fps * s +
+        msec * Math.floor(1000/fps)
+    return frames
+}
+
+function main() {
+
+    el_fps = document.querySelector("#fps");
+
+    el_frames = document.querySelector("#frames");
+    el_msec = document.querySelector("#el_msec");
+    
+    el_tc_hh = document.querySelector("#tc_hh");
+    el_tc_mm = document.querySelector("#tc_mm");
+    el_tc_ss = document.querySelector("#tc_ss");
+    el_tc_ff = document.querySelector("#tc_ff");
+
+    el_tcms_hh = document.querySelector("#tcms_hh");
+    el_tcms_mm = document.querySelector("#tcms_mm");
+    el_tcms_ss = document.querySelector("#tcms_ss");
+    el_tcms_msec = document.querySelector("#tcms_msec");
+
+    el_reset = document.querySelector("#el_reset");
+    el_reset.addEventListener("click", (event) => {
+        updateTimecode(0)
+    })
+
+    updateTimecode( 0 )
+
+    el_frames.addEventListener("change", (event) => {
+        //result.textContent = `You like ${event.target.value}`;
+        console.log( `change ${event.target.value}` )
+        updateTimecode( event.target.value )
+    })
+
+    el_msec.addEventListener("change", (event) => {
+        var fps = Number( el_fps.value )
+        console.log( `FPS: ${fps}` ) 
+        console.log( `change ${event.target.value}` )
+        updateTimecode( Math.floor( Number(event.target.value) / Math.floor(1000/fps) ) )
+    })
+
+    el_tc_hh.addEventListener("change", (event) => {
+        console.log( `change ${event.target.value}` )
+        var f = TimecodeToFrames(
+            el_tc_hh.value,
+            el_tc_mm.value,
+            el_tc_ss.value,
+            el_tc_ff.value
+        )
+        updateTimecode( f )
+    })
+    el_tc_mm.addEventListener("change", (event) => {
+        console.log( `change ${event.target.value}` )
+        var f = TimecodeToFrames(
+            el_tc_hh.value,
+            el_tc_mm.value,
+            el_tc_ss.value,
+            el_tc_ff.value
+        )
+        updateTimecode( f )
+    })
+    el_tc_ss.addEventListener("change", (event) => {
+        console.log( `change ${event.target.value}` )
+        var f = TimecodeToFrames(
+            el_tc_hh.value,
+            el_tc_mm.value,
+            el_tc_ss.value,
+            el_tc_ff.value
+        )
+        updateTimecode( f )
+    })
+    el_tc_ff.addEventListener("change", (event) => {
+        console.log( `change ${event.target.value}` )
+        var f = TimecodeToFrames(
+            el_tc_hh.value,
+            el_tc_mm.value,
+            el_tc_ss.value,
+            el_tc_ff.value
+        )
+        updateTimecode( f )
+    })
+
+    el_tcms_hh.addEventListener("change", (event) => {
+        console.log( `change ${event.target.value}` )
+        var f = TimecodeToFrames(
+            el_tcms_hh.value,
+            el_tcms_mm.value,
+            el_tcms_ss.value,
+            el_tcms_msec.value
+        )
+        updateTimecode( f )
+    })
+    el_tcms_mm.addEventListener("change", (event) => {
+        console.log( `change ${event.target.value}` )
+        var f = TimecodeToFrames(
+            el_tcms_hh.value,
+            el_tcms_mm.value,
+            el_tcms_ss.value,
+            el_tcms_msec.value
+        )
+        updateTimecode( f )
+    })
+    el_tcms_ss.addEventListener("change", (event) => {
+        console.log( `change ${event.target.value}` )
+        var f = TimecodeToFrames(
+            el_tcms_hh.value,
+            el_tcms_mm.value,
+            el_tcms_ss.value,
+            el_tcms_msec.value
+        )
+        updateTimecode( f )
+    })
+    el_tcms_msec.addEventListener("change", (event) => {
+        console.log( `change ${event.target.value}` )
+        var fps = Number( el_fps.value )
+        var msec = el_tcms_msec.value
+        var mod = msec % 40
+        console.log( `FPS: ${fps} MSEC ${msec} MOD ${mod}` ) 
+        if (mod != 0) {
+            msec = (msec - mod) + 40
+        }
+        var f = TimecodeToFrames(
+            el_tcms_hh.value,
+            el_tcms_mm.value,
+            el_tcms_ss.value,
+            msec / Math.floor(1000/fps)
+        )
+        updateTimecode( f )
+    })
+
+}
+
+</script>
+</body>
+</html>
