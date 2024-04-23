@@ -3,20 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timecode Converter and Calculator</title>
-    <style>
-        .box {
-            background-color: aqua;
-        }
-    </style>
+    <title>Timecode Converter and Calculator for Multimedia Content</title>
+<link
+rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.classless.min.css"
+/>
 </head>
 <body>
 <main>
-<section><h2>Timecode Converter</h2></section>
-    <div class="box">
+<section><h2>In-Browser Timecode Converter for Multimedia Content</h2></section>
+    <div>
+        <p><b>Config</b></p>
 <p>Select FPS
     <select id="fps">
         <option value="25">25</option>
+        <option value="30">30</option>
+        <option value="24">24</option>
     </select>
 </p>
 <p>Select TC format
@@ -30,7 +32,7 @@
 <p>Set SOM (frames)<input id="el_som_frames" type="number" value="0"/></p>
 </div>
 
-<div class="box">
+<div>
 <div id="div_frames">
 <p><b>Frames</b></p>
 <p><input id="frames" type="number" value="0"/></p>
@@ -62,7 +64,7 @@
 </div>
 </div>
 
-<div class="box">
+<div>
 <table width="100%">
     <tr><th></th><th>Absolute</th><th>Relative to SOM</th></tr>
     <tr><th>Frames</th><td id="display_frames"></td><td id="display_rframes"></td></tr>
@@ -71,8 +73,8 @@
     <tr><th>HH:MM:SS.MS</th><td id="display_hmsms"></td><td id="display_rhmsms"></td></tr>
 </table>
 </div>
-
 </main>
+<footer><center><small>by camillo777 - Works offline - <a href="https://github.com/camillo777/timecode_calculator_online">GitHub</a> - 2024</small></center></footer>
 
 <script>
 
